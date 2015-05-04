@@ -48,6 +48,17 @@ describe(Restaurant) do
       test_1.update({:name => 'Freddys Ribs'})
       expect(test_1.name()).to(eq('Freddys Ribs'))
     end
+
+    it('lets you add multiple food types for to a restaurant') do
+      test_restaurant = Restaurant.new({:name => "BBQ Hut", :id => nil})
+      test_restaurant.save()
+      test_food = Food.new({:type => "American", :id => nil})
+      test_food.save()
+      test_food_2 = Food.new({:type => "Mexican", :id => nil})
+      test_food_2.save()
+      test_restaurant.update({:food_type_ids => [test_food.id(), test_food_2.id()]})
+      expect(test_restaurant.food_types()).to(eq([test_food, test_food_2]))
+    end
   end
 
   describe('#delete') do

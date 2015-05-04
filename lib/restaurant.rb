@@ -30,9 +30,26 @@ class Restaurant
   end
 
   define_method(:update) do |attributes|
-    @name = attributes.fetch(:name)
+    @name = attributes.fetch(:name, @name)
     @id = self.id()
     DB.exec("UPDATE restaurants SET name = '#{@name}' WHERE id = #{@id};")
+
+    food_type_ids = attributes.fetch(:food_type_ids, [])
+    food_type_ids.each() do |food_id|
+      DB.exec("INSERT INTO restaurants_food_types (restaurant_id, food_type_id) VALUES (#{@id}, #{food_id});")
+    end
+  end
+
+  define_method(:food_types) do
+    food_types = []
+    results = DB.exec("SELECT food_type_id FROM restaurants_food_types WHERE restaurant_id = #{id()};")
+    results.each() do |result|
+      food_type_id = result.fetch("food_type_id").to_i()
+      food_type =  DB.exec("SELECT * FROM food_types WHERE id = #{food_type_id};")
+      type = food_type.first().fetch("food_type")
+      food_types.push(Food.new({:type => type, :id => food_type_id}))
+    end
+    food_types
   end
 
   define_method(:delete) do

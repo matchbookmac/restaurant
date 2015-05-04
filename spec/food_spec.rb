@@ -48,5 +48,13 @@ describe(Food) do
       expect(Food.find(test_2.id())).to(eq(test_2))
     end
   end
-  
+
+  describe('#update') do
+    it('updates the database for a given food type') do
+      test_1 = Food.new({:type => "American", :id => nil})
+      test_1.save()
+      test_1.update({:type => "Korean"})
+      expect(test_1.type()).to(eq("Korean"))
+    end
+  end
 end

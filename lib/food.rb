@@ -32,4 +32,10 @@ class Food
   define_method(:==) do |other_type|
     self.type().==(other_type.type()).&(other_type.id().==(self.id()))
   end
+
+  define_method(:update) do |attributes|
+    @type = attributes.fetch(:type)
+    DB.exec("UPDATE food_types SET food_type = '#{@type}' WHERE id = #{self.id()};")
+  end
+
 end

@@ -9,6 +9,14 @@ describe(Restaurant) do
     end
   end
 
+  describe('#id') do
+    it('return the id of a restaurant when called') do
+      test_1 = Restaurant.new({:name => "BBQ Hut", :id => nil})
+      test_1.save()
+      expect(test_1.id()).to(be_an_instance_of(Fixnum))
+    end
+  end
+
   describe('.all') do
     it('will return an empty array to start') do
       expect(Restaurant.all()).to(eq([]))
@@ -23,6 +31,36 @@ describe(Restaurant) do
     end
   end
 
+  describe('.find') do
+    it('will find a restaurant from its id') do
+      test_1 = Restaurant.new({:name => "BBQ Hut", :id => nil})
+      test_1.save()
+      test_2 = Restaurant.new({:name => "Freddys ribs", :id => nil})
+      test_2.save()
+      expect(Restaurant.find(test_2.id())).to(eq(test_2))
+    end
+  end
+
+  describe('#update') do
+    it('will update a restaurant\'s record in the database') do
+      test_1 = Restaurant.new({:name => "BBQ Hut", :id => nil})
+      test_1.save()
+      test_1.update({:name => 'Freddys Ribs'})
+      expect(test_1.name()).to(eq('Freddys Ribs'))
+    end
+  end
+
+  describe('#delete') do
+    it('will delete a restaurant from the database') do
+      test_1 = Restaurant.new({:name => "BBQ Hut", :id => nil})
+      test_1.save()
+      test_2 = Restaurant.new({:name => "BBQ Hut", :id => nil})
+      test_2.save()
+      test_1.delete()
+      expect(Restaurant.all()).to(eq([test_2]))
+    end
+  end
+
   describe('#==') do
     it('returns true if the restaurants\' names are the same') do
       test_1 = Restaurant.new({:name => "BBQ Hut", :id => nil})
@@ -31,11 +69,4 @@ describe(Restaurant) do
     end
   end
 
-  describe('#id') do
-    it('return the id of a restaurant when called') do
-      test_1 = Restaurant.new({:name => "BBQ Hut", :id => nil})
-      test_1.save()
-      expect(test_1.id()).to(be_an_instance_of(Fixnum))
-    end
-  end
 end

@@ -22,6 +22,23 @@ class Restaurant
     @id = result.first().fetch("id").to_i()
   end
 
+  define_singleton_method(:find) do |id|
+    @id = id
+    result = DB.exec("SELECT * FROM restaurants WHERE id = #{@id};")
+    @name = result.first().fetch('name')
+    Restaurant.new({:name => @name, :id => @id})
+  end
+
+  define_method(:update) do |attributes|
+    @name = attributes.fetch(:name)
+    @id = self.id()
+    DB.exec("UPDATE restaurants SET name = '#{@name}' WHERE id = #{@id};")
+  end
+
+  define_method(:delete) do
+    DB.exec("DELETE FROM restaurants WHERE id = #{self.id()};")
+  end
+
   define_method(:==) do |other_place|
     self.name().==(other_place.name())
   end

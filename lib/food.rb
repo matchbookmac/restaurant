@@ -40,6 +40,7 @@ class Food
 
   define_method(:delete) do
     DB.exec("DELETE FROM food_types WHERE id = #{id()};")
+    DB.exec("DELETE FROM restaurants_food_types WHERE id = #{id()};")
   end
 
   define_method(:==) do |other_type|

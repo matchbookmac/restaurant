@@ -29,13 +29,34 @@ class Food
     Food.new({:type => type, :id => id})
   end
 
+  define_method(:update) do |attributes|
+    @type = attributes.fetch(:type, @type)
+    DB.exec("UPDATE food_types SET food_type = '#{@type}' WHERE id = #{self.id()};")
+    @restaurant_ids = attributes.fetch(:restaurant_ids, [])
+    @restaurant_ids.each() do |place_id|
+      DB.exec("INSERT INTO restaurants_food_types (restaurant_id, food_type_id) VALUES (#{place_id}, #{self.id()});")
+    end
+  end
+
+  define_method(:delete) do
+    DB.exec("DELETE FROM food_types WHERE id = #{id()};")
+  end
+
   define_method(:==) do |other_type|
     self.type().==(other_type.type()).&(other_type.id().==(self.id()))
   end
 
-  define_method(:update) do |attributes|
-    @type = attributes.fetch(:type)
-    DB.exec("UPDATE food_types SET food_type = '#{@type}' WHERE id = #{self.id()};")
+  define_method(:restaurants) do
+    restaurants = []
+    results = DB.exec("SELECT restaurant_id FROM restaurants_food_types WHERE food_type_id = #{self.id()};")
+    results.each() do |result|
+      restaurant_id = result.fetch("restaurant_id").to_i()
+      restaurant = DB.exec("SELECT * FROM restaurants WHERE id = #{restaurant_id};")
+      name = restaurant.first().fetch("name")
+      restaurants.push(Restaurant.new({:name => name, :id => restaurant_id}))
+    end
+    restaurants
   end
+
 
 end

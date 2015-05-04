@@ -56,5 +56,26 @@ describe(Food) do
       test_1.update({:type => "Korean"})
       expect(test_1.type()).to(eq("Korean"))
     end
+
+    it('lets you add multiple restaurants for one food type') do
+      test_food = Food.new({:type => "American", :id => nil})
+      test_food.save()
+      test_restaurant = Restaurant.new({:name => "BBQ Hut", :id => nil})
+      test_restaurant.save()
+      test_restaurant_2 = Restaurant.new({:name => "Freddys Ribs", :id => nil})
+      test_restaurant_2.save()
+      test_food.update({:restaurant_ids => [test_restaurant.id(), test_restaurant_2.id()]})
+      expect(test_food.restaurants()).to(eq([test_restaurant, test_restaurant_2]))
+    end
   end
+
+  describe('#delete') do
+    it('remove food type from database') do
+      test_1 = Food.new({:type => "American", :id => nil})
+      test_1.save()
+      test_1.delete()
+      expect(Food.all()).to(eq([]))
+    end
+  end
+
 end

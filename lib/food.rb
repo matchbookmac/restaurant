@@ -22,6 +22,13 @@ class Food
     @id = result.first().fetch("id").to_i()
   end
 
+  define_singleton_method(:find) do |id|
+    @id = id
+    result = DB.exec("SELECT * FROM food_types WHERE id = #{@id};")
+    type = result.first().fetch("food_type")
+    Food.new({:type => type, :id => id})
+  end
+
   define_method(:==) do |other_type|
     self.type().==(other_type.type()).&(other_type.id().==(self.id()))
   end

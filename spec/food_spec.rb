@@ -38,4 +38,15 @@ describe(Food) do
       expect(test_food_1).to(eq(test_food_2))
     end
   end
+
+  describe('.find') do
+    it('return the object by its id') do
+      test_1 = Food.new({:type => "American", :id => nil})
+      test_1.save()
+      test_2 = Food.new({:type => "Chinese", :id => nil})
+      test_2.save()
+      expect(Food.find(test_2.id())).to(eq(test_2))
+    end
+  end
+  
 end
